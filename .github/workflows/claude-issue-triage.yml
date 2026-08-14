@@ -1,0 +1,60 @@
+name: Claude Issue Triage
+
+on:
+  issues:
+    types: [opened, edited]
+
+concurrency:
+  group: claude-issue-triage-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Run Claude Issue Triage
+        id: claude-triage
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+          claude_args: '--allowedTools "Bash(gh issue view:*),Bash(gh label list:*),Bash(gh issue edit:*),Bash(gh api:*),Bash(gh issue comment:*)" --max-turns 15'
+
+          prompt: |
+            Analiza el issue #${{ github.event.issue.number }} de este repositorio (un juego de Tetris en JavaScript vainilla sin dependencias: index.html, style.css, game.js — ver CLAUDE.md para la arquitectura).
+
+            No modifiques ningún archivo del repositorio ni abras pull requests: esta tarea es solo de triage y diagnóstico, usando exclusivamente `gh`.
+
+            Pasos:
+
+            1. Lee el issue con `gh issue view ${{ github.event.issue.number }}` (título, cuerpo y labels actuales).
+
+            2. Ejecuta `gh label list` para ver las labels disponibles en el repo y decide cuáles corresponden a este issue (por ejemplo: bug, enhancement, question, documentation, duplicate, invalid, help wanted, good first issue). Aplica solo las que correspondan con `gh issue edit ${{ github.event.issue.number }} --add-label "<label>"`. No quites labels que ya haya puesto una persona, salvo que sean claramente incorrectas para el contenido actual del issue.
+
+            3. Diagnostica el problema en profundidad: revisa el código relevante (normalmente en game.js, dada la arquitectura de funciones top-level sobre estado mutable de módulo descrita en CLAUDE.md) para identificar la causa probable, la(s) función(es) o sección(es) implicadas, la severidad estimada y una propuesta de enfoque de solución. No implementes la solución, solo diagnostica.
+
+            4. Antes de publicar nada, lista los comentarios existentes del issue con `gh api repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments` y busca uno que empiece con el marcador `<!-- claude-triage-diagnosis -->`.
+               - Si ya existe uno (típico cuando el issue fue editado y ya se había diagnosticado antes), actualízalo con `gh api -X PATCH repos/${{ github.repository }}/issues/comments/<id> -f body='<contenido>'` en vez de crear uno nuevo.
+               - Si no existe, créalo con `gh issue comment ${{ github.event.issue.number }} --body '<contenido>'`.
+
+            El comentario debe estar en español, empezar en su primera línea con el marcador `<!-- claude-triage-diagnosis -->` y seguir esta estructura:
+
+            ```
+            <!-- claude-triage-diagnosis -->
+            ## Diagnóstico automático (Claude)
+
+            **Resumen:** ...
+            **Área/archivo afectado:** ...
+            **Causa probable:** ...
+            **Severidad estimada:** ...
+            **Sugerencia de enfoque para la solución:** ...
+            ```
