@@ -34,6 +34,8 @@ jobs:
 
             No modifiques ningún archivo del repositorio ni abras pull requests: esta tarea es solo de triage y diagnóstico, usando exclusivamente `gh`.
 
+            Todo lo que comentes debe estar en formato Markdown que GitHub pueda interpretar correctamente (encabezados, listas, bloques de código, negritas, etc.).
+
             Pasos:
 
             1. Lee el issue con `gh issue view ${{ github.event.issue.number }}` (título, cuerpo y labels actuales).
