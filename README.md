@@ -42,6 +42,7 @@ Es una versión jugable del Tetris clásico con todas las mecánicas que esperar
 - **Sistema de puntuación** clásico de Tetris (100 / 300 / 500 / 800 multiplicado por nivel).
 - **Niveles** que aumentan cada 10 líneas y aceleran la caída.
 - **Pausa** y **Game Over** con opción de reinicio.
+- **Modo claro / oscuro**: switch junto al título para alternar el tema. El modo oscuro es el predeterminado y la elección se recuerda entre sesiones (`localStorage`).
 
 ---
 
@@ -102,7 +103,7 @@ Define la estructura visual:
 
 ### 2. `style.css`
 
-Aporta el aspecto visual con estética _dark / retro arcade_: fondo oscuro, tipografía monoespaciada para los marcadores y _backdrop blur_ en los overlays.
+Aporta el aspecto visual con estética _dark / retro arcade_ por defecto, tipografía monoespaciada para los marcadores y _backdrop blur_ en los overlays. Los colores se definen como variables CSS en `:root` (tema oscuro) y se sobrescriben bajo la clase `body.light-theme` (tema claro), lo que permite alternar el tema con un simple toggle de clase en el `<body>`.
 
 ### 3. `game.js`
 
@@ -117,6 +118,7 @@ Contiene toda la lógica del juego. A grandes rasgos:
 - **Puntuación**: usa la tabla clásica `[0, 100, 300, 500, 800]` multiplicada por el nivel actual; el hard drop suma 2 puntos por celda recorrida y el soft drop 1 punto por fila.
 - **Nivel y velocidad**: el nivel sube cada 10 líneas; la velocidad de caída se calcula como `max(100, 1000 − (level − 1) × 90)` milisegundos.
 - **Ghost piece** (`ghostY`): proyecta la posición final de la pieza actual hacia abajo y la dibuja con `globalAlpha = 0.2`.
+- **Tema claro/oscuro** (`applyTheme`, `readCanvasThemeColors`): alterna la clase `light-theme` en el `<body>`, persiste la preferencia en `localStorage` bajo la clave `tetris-theme` y relee los colores de grilla/highlight del canvas desde las variables CSS activas (vía `getComputedStyle`) para que el `<canvas>` siga la paleta del tema elegido.
 
 ### Flujo del juego
 
