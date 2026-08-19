@@ -25,6 +25,15 @@
   --restart-hover: #9bbdff;
   --grid-line: #22222e;
   --block-highlight: rgba(255, 255, 255, 0.12);
+  --highlight-bg: rgba(122, 162, 247, 0.18);
+  --highlight-color: #7aa2f7;
+  --input-bg: #1a1a25;
+  --input-border: #3a3a5a;
+  --reset-bg: transparent;
+  --reset-border: #3a3a5a;
+  --reset-color: #888;
+  --reset-hover-bg: rgba(229, 115, 115, 0.12);
+  --reset-hover-color: #e57373;
 }
 
 body.light-theme {
@@ -48,6 +57,15 @@ body.light-theme {
   --restart-hover: #5c7cfa;
   --grid-line: #dcdfec;
   --block-highlight: rgba(255, 255, 255, 0.45);
+  --highlight-bg: rgba(59, 91, 219, 0.12);
+  --highlight-color: #3b5bdb;
+  --input-bg: #ffffff;
+  --input-border: #c6cadb;
+  --reset-bg: transparent;
+  --reset-border: #c6cadb;
+  --reset-color: #6b6f8a;
+  --reset-hover-bg: rgba(192, 57, 43, 0.1);
+  --reset-hover-color: #c0392b;
 }
 
 body {
@@ -253,4 +271,141 @@ kbd {
 
 #restart-btn:hover {
   background: var(--restart-hover);
+}
+
+/* ---- Tabla de récords ---- */
+.leaderboard {
+  border-top: 1px solid var(--board-border);
+  padding-top: 16px;
+}
+
+.scores-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+}
+
+.scores-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  color: var(--text);
+}
+
+.scores-list li.current-entry {
+  background: var(--highlight-bg);
+  color: var(--highlight-color);
+  font-weight: 700;
+}
+
+.scores-list li.empty {
+  color: var(--label-color);
+  font-style: italic;
+  justify-content: center;
+}
+
+.score-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stats-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--controls-color);
+}
+
+.stats-mini strong {
+  color: var(--value-color);
+}
+
+.reset-btn {
+  margin-top: 10px;
+  background: var(--reset-bg);
+  color: var(--reset-color);
+  border: 1px solid var(--reset-border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.15s, color 0.15s;
+  width: 100%;
+}
+
+.reset-btn:hover {
+  background: var(--reset-hover-bg);
+  color: var(--reset-hover-color);
+  border-color: var(--reset-hover-color);
+}
+
+/* ---- Ingreso de nombre en Game Over ---- */
+.name-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.name-entry.hidden {
+  display: none;
+}
+
+.name-entry label {
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--label-color);
+}
+
+#name-input {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 14px;
+  text-align: center;
+  width: 160px;
+}
+
+#save-score-btn {
+  background: var(--restart-bg);
+  color: var(--restart-color);
+  border: none;
+  border-radius: 6px;
+  padding: 6px 20px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+#save-score-btn:hover {
+  background: var(--restart-hover);
+}
+
+.overlay-scores {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  width: 200px;
+}
+
+.overlay-scores.hidden {
+  display: none;
+}
+
+.overlay-scores .scores-list {
+  width: 100%;
 }

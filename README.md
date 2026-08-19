@@ -43,6 +43,8 @@ Es una versión jugable del Tetris clásico con todas las mecánicas que esperar
 - **Niveles** que aumentan cada 10 líneas y aceleran la caída.
 - **Pausa** y **Game Over** con opción de reinicio.
 - **Modo claro / oscuro**: switch junto al título para alternar el tema. El modo oscuro es el predeterminado y la elección se recuerda entre sesiones (`localStorage`).
+- **Tabla de récords local**: widget permanente en el panel lateral con las 5 mejores puntuaciones (nombre + puntuación), guardadas en `localStorage`. Al terminar una partida que entra en el top 5 se pide el nombre del jugador antes de guardarla; la entrada recién agregada se resalta en la lista. Incluye un botón para resetear los récords.
+- **Estadísticas históricas**: mejor combo (líneas seguidas eliminadas sin fallar un lock) y máximo de líneas en una sola partida, ambos persistidos en `localStorage` y visibles junto a la tabla de récords.
 
 ---
 
@@ -119,6 +121,8 @@ Contiene toda la lógica del juego. A grandes rasgos:
 - **Nivel y velocidad**: el nivel sube cada 10 líneas; la velocidad de caída se calcula como `max(100, 1000 − (level − 1) × 90)` milisegundos.
 - **Ghost piece** (`ghostY`): proyecta la posición final de la pieza actual hacia abajo y la dibuja con `globalAlpha = 0.2`.
 - **Tema claro/oscuro** (`applyTheme`, `readCanvasThemeColors`): alterna la clase `light-theme` en el `<body>`, persiste la preferencia en `localStorage` bajo la clave `tetris-theme` y relee los colores de grilla/highlight del canvas desde las variables CSS activas (vía `getComputedStyle`) para que el `<canvas>` siga la paleta del tema elegido.
+- **Tabla de récords** (`loadScores`, `addScore`, `renderScores`): el top 5 se guarda como JSON en `localStorage` bajo `tetris-scores` (array de `{id, name, score}`, ordenado descendente y recortado a 5 entradas). Al perder, `endGame()` compara la puntuación final contra la lista guardada (`qualifiesForTopScores`); si entra en el top 5 muestra un campo de texto para el nombre dentro del overlay y `submitScoreEntry()` la guarda. `renderScores()` dibuja la misma lista en el panel lateral y en el overlay, resaltando con la clase `current-entry` la fila recién agregada.
+- **Combo y líneas máximas**: `clearLines()` incrementa un contador de combo en cada lock que elimina al menos una línea y lo reinicia a `0` en el primer lock sin líneas eliminadas; el máximo histórico se guarda en `localStorage` bajo `tetris-best-combo`. `endGame()` compara `lines` de la partida contra el máximo histórico guardado en `tetris-max-lines`. Ambas estadísticas se muestran junto a la tabla de récords.
 
 ### Flujo del juego
 
