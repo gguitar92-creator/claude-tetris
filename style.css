@@ -97,6 +97,18 @@ body {
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
 }
 
+/* ---- Skin selector ---- */
+.skin-select {
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  color: var(--kbd-color);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
 /* ---- Theme toggle ---- */
 .theme-toggle {
   display: flex;

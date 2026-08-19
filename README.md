@@ -43,6 +43,7 @@ Es una versión jugable del Tetris clásico con todas las mecánicas que esperar
 - **Niveles** que aumentan cada 10 líneas y aceleran la caída.
 - **Pausa** y **Game Over** con opción de reinicio.
 - **Modo claro / oscuro**: switch junto al título para alternar el tema. El modo oscuro es el predeterminado y la elección se recuerda entre sesiones (`localStorage`).
+- **Skins visuales**: selector junto al título con 4 estilos de renderizado de bloques — **Retro** (el clásico, predeterminado), **Neon** (fondo negro y bloques con resplandor `shadowBlur`), **Pastel** (paleta suave y esquinas redondeadas) y **Pixel Art** (textura tipo damero sobre cada bloque). El cambio es instantáneo (sin recargar la página), se aplica también a la vista previa de la siguiente pieza, y se recuerda entre sesiones (`localStorage`) de forma independiente al tema claro/oscuro.
 
 ---
 
@@ -119,6 +120,7 @@ Contiene toda la lógica del juego. A grandes rasgos:
 - **Nivel y velocidad**: el nivel sube cada 10 líneas; la velocidad de caída se calcula como `max(100, 1000 − (level − 1) × 90)` milisegundos.
 - **Ghost piece** (`ghostY`): proyecta la posición final de la pieza actual hacia abajo y la dibuja con `globalAlpha = 0.2`.
 - **Tema claro/oscuro** (`applyTheme`, `readCanvasThemeColors`): alterna la clase `light-theme` en el `<body>`, persiste la preferencia en `localStorage` bajo la clave `tetris-theme` y relee los colores de grilla/highlight del canvas desde las variables CSS activas (vía `getComputedStyle`) para que el `<canvas>` siga la paleta del tema elegido.
+- **Skins visuales** (`SKINS`, `applySkin`): cada skin es una entrada del objeto `SKINS` con su propia paleta de colores (`retro` y `pixelart` reutilizan `COLORS` por referencia) y flags opcionales — `glow` (resplandor Neon vía `shadowBlur`/`shadowColor`, reseteado tras cada bloque), `rounded` (esquinas redondeadas Pastel vía `ctx.roundRect`, con fallback manual a `arcTo` si el navegador no lo soporta), `texture: 'checker'` (damero Pixel Art) y overrides opcionales de `background`/`gridColor`/`highlightColor`. Todo el renderizado de bloques (tablero, ghost piece, pieza activa y vista previa) pasa por `drawBlock()`, que consulta la skin activa (`currentSkin`) para decidir cómo pintar. La elección se persiste en `localStorage` bajo la clave `tetris-skin` y es independiente del tema claro/oscuro.
 
 ### Flujo del juego
 
@@ -176,6 +178,7 @@ Algunos parámetros fáciles de tunear en `game.js`:
 | `ROWS`         | Filas del tablero                        | `20`                  |
 | `BLOCK`        | Tamaño en píxeles de cada celda          | `30`                  |
 | `COLORS`       | Paleta de colores por tipo de pieza      | 8 colores             |
+| `SKINS`        | Paletas y flags de renderizado por skin  | `retro`/`neon`/`pastel`/`pixelart` |
 | `LINE_SCORES`  | Puntos por 1, 2, 3 o 4 líneas eliminadas | `[0,100,300,500,800]` |
 | `dropInterval` | Velocidad inicial de caída en ms         | `1000`                |
 
